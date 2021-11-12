@@ -86,6 +86,15 @@ export default class AppHome extends React.Component {
                 tabBarShowLabel: false,
                 tabBarStyle: TabBarStylesBasic.basic,
                 }}>
+
+            <Tab.Screen name="profiles" component={UserTabs} 
+                                 options={{
+                                     tabBarLabel: 'profile',
+       
+                                             tabBarIcon: ({ focused }) => (
+                         <Icon name="user-circle"   style={{    opacity: focused ? 1 : 0.2, color : focused ? '#900' : '#000' ,fontSize : focused ?  30  :  20  }} />
+                         ),
+                             }}/>
                 <Tab.Screen name="usertabs" component={UserTabs} 
                         listeners={({ navigation, route }) => ({
                             tabLongPress: (e) => { this.TabLongPress(e, navigation, route) },
@@ -95,14 +104,7 @@ export default class AppHome extends React.Component {
                                 ),  
                             }}
                 />
-                 <Tab.Screen name="profile" component={UserTabs} 
-                                 options={{
-                                     tabBarLabel: 'profile',
-       
-                                             tabBarIcon: ({ focused }) => (
-                         <Icon name="user-circle"   style={{    opacity: focused ? 1 : 0.2, color : focused ? '#900' : '#000' ,fontSize : focused ?  30  :  20  }} />
-                         ),
-                             }}/>
+                
             </Tab.Navigator>
         );
     }

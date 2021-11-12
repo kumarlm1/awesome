@@ -327,7 +327,7 @@ const Dummy = () => {
 
 
 
-
+import AppHome from './home';
 const Home = () => {
     
 
@@ -350,7 +350,7 @@ const Home = () => {
       //   />
         <NavigationContainer>
 
-      <MyTabs />
+      <AppHome/>
       
     </NavigationContainer>
       // <NavigationContainer><FilePicker /></NavigationContainer>

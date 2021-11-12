@@ -1,4 +1,5 @@
 import React from 'react';
+import 'react-native-gesture-handler';
 import  type {Node} from 'react';
 import {
   SafeAreaView,
