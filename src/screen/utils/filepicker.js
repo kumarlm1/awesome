@@ -76,19 +76,21 @@ const selectOneFile = async () => {
 
 
 
- export const uploadImageToStorage  = async (path, name)=> {
-   
+ export const uploadImageToStorage  = async (path, name,compress,getUrl)=> {
       let Originalpath = ''
-    Originalpath = await compressImage(path)
-    let urls=null;
-   // let Originalpath = 'file://'+String(path);
+      let urls=null;
+    if(compress){
+     Originalpath = await compressImage(path) }
+    else{
+     Originalpath = 'file://'+String(path);
+    }
     console.log(Originalpath)
     let reference = storage().ref('kumar/'+name)
     let task = reference.putFile(Originalpath);
     await task.then(async (e) => {
         let path = 'gs://'+ e.metadata.bucket + '/'+e.metadata.fullPath
         console.log('Image uploaded to the bucket!');
-        
+        if(getUrl){
         await reference.getDownloadURL()
         .then((url) => {
         //from url you can fetched the uploaded image easily
@@ -96,6 +98,7 @@ const selectOneFile = async () => {
         urls = url
         })
         .catch((e) => console.log('getting downloadURL of image error => ', e));
+      }
 
       
         
@@ -155,52 +158,85 @@ await ImageResizer.createResizedImage(
   });
   return url
 }
+export async function listFilesAndDirectories(reference, pageToken,lists=[]) {
+  return reference.list({ pageToken }).then(async result => {
+    // Loop over each item
+    await Promise.all( result.items.map(async ref => {
 
+     
+       let refe =  storage().ref(ref.fullPath)
+       
+     return  await refe.getDownloadURL()
+                  .then( async (url) => {
+                  //from url you can fetched the uploaded image easily
+                  await refe.getMetadata().then((data)=>{
+                    lists.push(
+                      { name:data.name,
+                        created : data.timeCreated,
+                        updated : data.updated,
+                        url:url});
+                       })
+                 
+                  
+                  })
+                  .catch((e) => console.log('getting downloadURL of image error => ', e));
+       // return Promise.resolve();
+      
+    })
+    );
 
-export async function listFilesAndDirectories(reference, pageToken  ) {
-    let  resultslist = []
-    let refe = null
-    await reference.list({ pageToken }).then( async (result) => {
-        // Loop over each item 
-        await result.items.forEach(async (ref) => {
-            refe =  storage().ref(ref.fullPath)
-            let uurl = null
-            await refe.getDownloadURL()
-            .then( (url) => {
-            //from url you can fetched the uploaded image easily
-            console.log(url)
-            uurl = url
-            })
-            .catch((e) => console.log('getting downloadURL of image error => ', e));
-            resultslist.push(uurl) 
-        });
-        //  while(result.nextPageToken){
-        //     await reference.list({ pageToken }).then( async (result) => {
-        //       // Loop over each item 
-        //       await result.items.forEach(async (ref) => {
-        //         refe = storage().ref(ref.fullPath)
-        //         await refe.getDownloadURL()
-        //         .then((url) => {
-        //         //from url you can fetched the uploaded image easily
-        //         console.log(url)
-        //         resultslist.push(url)
-        //         })
-        //         .catch((e) => console.log('getting downloadURL of image error => ', e));
-        //       });
-        //     })
-        // }
+    if (result.nextPageToken) {
+      return listFilesAndDirectories(reference, result.nextPageToken);
+    }
 
-      })
+    return Promise.resolve().then(()=>{  return lists  });
+  }); 
+}
+
+// export async function listFilesAndDirectories(reference, pageToken  ) {
+//     let  resultslist = []
+//     let refe = null
+//     await reference.list({ pageToken }).then( async (result) => {
+//         // Loop over each item 
+//         await result.items.forEach(async (ref) => {
+//             refe =  storage().ref(ref.fullPath)
+//             let uurl = null
+//             await refe.getDownloadURL()
+//             .then( (url) => {
+//             //from url you can fetched the uploaded image easily
+//             console.log(url)
+//             uurl = url
+//             })
+//             .catch((e) => console.log('getting downloadURL of image error => ', e));
+//             resultslist.push(uurl) 
+//         });
+//         //  while(result.nextPageToken){
+//         //     await reference.list({ pageToken }).then( async (result) => {
+//         //       // Loop over each item 
+//         //       await result.items.forEach(async (ref) => {
+//         //         refe = storage().ref(ref.fullPath)
+//         //         await refe.getDownloadURL()
+//         //         .then((url) => {
+//         //         //from url you can fetched the uploaded image easily
+//         //         console.log(url)
+//         //         resultslist.push(url)
+//         //         })
+//         //         .catch((e) => console.log('getting downloadURL of image error => ', e));
+//         //       });
+//         //     })
+//         // } 
+
+//       })
    
 
-        console.log('--------------------------',resultslist)
-        return resultslist
+//         console.log('--------------------------',resultslist)
+//         return resultslist
          
       
          
       
         
-}
+// }
       
      
 

@@ -13,6 +13,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from '../user/profile';
 import UserData from '../user/userdata';
 import UserTabs from '../user/usertabs';
+import FilePicker from './filepicker';
+import Feed from '../user/feed';
 
 /////////////////////////////////////  styles //////////////////////////////////////////
 
@@ -103,15 +105,15 @@ export default class AppHome extends React.Component {
                 
                 >
 
-            <Tab.Screen name="profiles" children={()=><UserData />} 
+            <Tab.Screen name="profiles" children={()=><Feed />} 
                                  options={{
                                      tabBarLabel: 'profile',
-       
+                                     headerShown:false,
                                              tabBarIcon: ({ focused }) => (
                          <Icon name="cogs"   style={{    opacity: focused ? 1 : 0.2, color : focused ? '#900' : '#000' ,fontSize : focused ?  30  :  20  }} />
                          ),
                              }}/>
-                 <Tab.Screen name="profile" component={UserData} 
+                 <Tab.Screen name="profile" component={FilePicker} 
                                  options={{
                                      tabBarLabel: 'profile',
        

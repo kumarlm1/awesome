@@ -105,8 +105,8 @@ export default class Profile extends React.Component {
         this.setState({
             isUploading : true
         })
-        url = await uploadImageToStorage(result.fileCopyUri,result.filename)
-        if(url !== null) {
+        url = await uploadImageToStorage(result.fileCopyUri,result.filename,false,true)
+        if(url !== null && result !== null) {
 
       
             this.setState({
@@ -138,15 +138,14 @@ export default class Profile extends React.Component {
     }
 
 
-    async componentDidMount() {
-        // console.log('called')
-        // let listss = []
-        // const reference = await storage().ref('kumar');
+    async componentDidMount1() {
+        
+        const reference =  storage().ref('kumar');
 
-        // listss = await listFilesAndDirectories(reference).then(() => {
-        //   console.log('Finished listing');
-        // });
-        //  console.log(listss.length())
+        await listFilesAndDirectories(reference).then((e) => {
+          console.log('Finished listing------------------>',e);
+        });
+         
         
     }
     showToast(message) {
@@ -215,12 +214,7 @@ export default class Profile extends React.Component {
                 </TouchableOpacity>
                 <View style={styles.header}>
                 <Text style={styles.username}> this is profile</Text>
-                <FlatList 
-                style={{ backgroundColor:'green' ,height:'50%',width:'90%',padding:20 }}
-                data={this.state.images}
-                renderItem={({item})=>(  <Image style={{  width: 200,
-                    height: 200, }} source={{ uri: this.state.avatar}}/>    )}
-                />
+               
                 
                 </View>
               

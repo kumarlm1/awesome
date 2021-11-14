@@ -13,7 +13,9 @@ import {
   ScrollView,
   Button,
   Image,
+  ToastAndroid,
 } from 'react-native';
+import { selectSingleFile ,uploadImageToStorage,listFilesAndDirectories } from '../utils/filepicker';
 
 // Import Document Picker
 import DocumentPicker from 'react-native-document-picker';
@@ -27,6 +29,7 @@ const FilePicker = () => {
     try {
       const result = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
+        copyTo :'documentDirectory'
         //There can me more options as well
         // DocumentPicker.types.allFiles
         // DocumentPicker.types.images
@@ -41,6 +44,7 @@ const FilePicker = () => {
       console.log('File Name : ' + result[0].name);
       console.log('File Size : ' + result[0].size);
       //Setting the state to show single file attributes
+      uploadImageToStorage(result[0].fileCopyUri,result[0].name,false,false).then(()=>{ ToastAndroid.show('uploaded',ToastAndroid.SHORT)  })
       setSingleFile(result[0]);
     } catch (err) {
       //Handling any exception (If any)
@@ -60,6 +64,7 @@ const FilePicker = () => {
     try {
       const results = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.images],
+        copyTo :'documentDirectory'
         //There can me more options as well find above
       });
       for (const res of results) {
@@ -69,6 +74,8 @@ const FilePicker = () => {
         console.log('Type : ' + res.type);
         console.log('File Name : ' + res.name);
         console.log('File Size : ' + res.size);
+        uploadImageToStorage(res.fileCopyUri,res.name,false,false).then(()=>{ ToastAndroid.show('uploaded',ToastAndroid.SHORT)  })
+        
       }
       //Setting the state to show multiple file attributes
       setMultipleFile(results);
