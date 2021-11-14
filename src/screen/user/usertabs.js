@@ -33,10 +33,11 @@ export default class UserTabs extends React.Component{
     }
 
     render(){
+      
         return(
             <Tab.Navigator >
-            <Tab.Screen name="profile" component={Profile}  />
-            <Tab.Screen name="userdata" component={UserData}  />
+            <Tab.Screen name="profile" children={()=><Profile blur={this.props.blur} refe={this.props.refe} />}   />
+            <Tab.Screen name="userdata" children={()=><UserData />}   />
             </Tab.Navigator>
         )
     }

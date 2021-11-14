@@ -11,6 +11,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Button,
   Image,
 } from 'react-native';
 
@@ -18,14 +19,14 @@ import {
 import DocumentPicker from 'react-native-document-picker';
 
 const FilePicker = () => {
-  const [singleFile, setSingleFile] = useState('');
+  const [singleFile, setSingleFile] = useState(null);
   const [multipleFile, setMultipleFile] = useState([]);
 
   const selectOneFile = async () => {
     //Opening Document Picker for selection of one file
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
+      const result = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
         //There can me more options as well
         // DocumentPicker.types.allFiles
         // DocumentPicker.types.images
@@ -34,13 +35,13 @@ const FilePicker = () => {
         // DocumentPicker.types.pdf
       });
       //Printing the log realted to the file
-      console.log('res : ' + JSON.stringify(res));
-      console.log('URI : ' + res.uri);
-      console.log('Type : ' + res.type);
-      console.log('File Name : ' + res.name);
-      console.log('File Size : ' + res.size);
+      console.log('res : ' + JSON.stringify(result));
+      console.log('URI : ' + result[0].uri);
+      console.log('Type : ' + result[0].type);
+      console.log('File Name : ' + result[0].name);
+      console.log('File Size : ' + result[0].size);
       //Setting the state to show single file attributes
-      setSingleFile(res);
+      setSingleFile(result[0]);
     } catch (err) {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
@@ -85,61 +86,38 @@ const FilePicker = () => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{ flex:1  }}>
       <Text style={styles.titleText}>
         Example of File Picker in React Native
       </Text>
+      <Button title="clear"  onPress={()=>{   setMultipleFile([]);setSingleFile(null)  }} ></Button>
+      
+      
       <View style={styles.container}>
         {/*To show single file attribute*/}
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.buttonStyle}
-          onPress={selectOneFile}>
-          {/*Single file selection button*/}
-          <Text style={{marginRight: 10, fontSize: 19}}>
-            Click here to pick one file
-          </Text>
-          <Image
-            source={{
-              uri: 'https://img.icons8.com/offices/40/000000/attach.png',
-            }}
-            style={styles.imageIconStyle}
-          />
-        </TouchableOpacity>
+        <Button  title="single file" onPress={()=>{selectOneFile()}}></Button>
         {/*Showing the data of selected Single file*/}
+        {  singleFile!== null ?
         <Text style={styles.textStyle}>
-          File Name: {singleFile.name ? singleFile.name : ''}
+            
+          File Name: { singleFile.name }
           {'\n'}
-          Type: {singleFile.type ? singleFile.type : ''}
+          Type: { singleFile.type }
           {'\n'}
-          File Size: {singleFile.size ? singleFile.size : ''}
+          File Size: { singleFile.size }
           {'\n'}
-          URI: {singleFile.uri ? singleFile.uri : ''}
+          URI: {singleFile.uri}
           {'\n'}
-        </Text>
-        <View
-          style={{
-            backgroundColor: 'grey',
-            height: 2,
-            margin: 10
-          }} />
-        {/*To multiple single file attribute*/}
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.buttonStyle}
-          onPress={selectMultipleFile}>
-          {/*Multiple files selection button*/}
-          <Text style={{marginRight: 10, fontSize: 19}}>
-            Click here to pick multiple files
+
           </Text>
-          <Image
-            source={{
-              uri: 'https://img.icons8.com/offices/40/000000/attach.png',
-            }}
-            style={styles.imageIconStyle}
-          />
-        </TouchableOpacity>
-        <ScrollView>
+          :
+          <Text style={styles.textStyle}></Text>
+        }
+       
+        {/*To multiple single file attribute*/}
+        <Button title="Multiple file" onPress={()=>{selectMultipleFile()}}></Button>
+        
+        <ScrollView style={styles.scroll}>
           {/*Showing the data of selected Multiple files*/}
           {multipleFile.map((item, key) => (
             <View key={key}>
@@ -156,8 +134,9 @@ const FilePicker = () => {
             </View>
           ))}
         </ScrollView>
+        
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -165,22 +144,29 @@ export default FilePicker;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 16,
+    padding:20,
+  backgroundColor: '#fff',
+    
   },
   titleText: {
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingVertical: 20,
+   
   },
   textStyle: {
     backgroundColor: '#fff',
     fontSize: 15,
-    marginTop: 16,
+    
     color: 'black',
   },
+ 
+  scroll:{
+  
+    padding:20,
+    
+  }
+  ,
   buttonStyle: {
     alignItems: 'center',
     flexDirection: 'row',

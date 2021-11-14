@@ -6,7 +6,7 @@ import {
 
 
 
-
+import FilePicker from '../home/filepicker';
 
 export default class UserData extends React.Component {
     constructor(props) {
@@ -24,8 +24,9 @@ export default class UserData extends React.Component {
 
     render() {
         return (
-            <View >
-               <Text>  This is User Data Page  </Text>
+            <View style={{ flex:1 }}>
+                <FilePicker />
+            
             </View>
         );
     }

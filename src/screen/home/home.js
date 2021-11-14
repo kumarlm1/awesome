@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     View,Text,
+    ToastAndroid,
     Image, StyleSheet,Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -9,7 +10,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
-
+import Profile from '../user/profile';
+import UserData from '../user/userdata';
 import UserTabs from '../user/usertabs';
 
 /////////////////////////////////////  styles //////////////////////////////////////////
@@ -63,6 +65,8 @@ export default class AppHome extends React.Component {
         this.state = {
             isLoading: true,
             dataSource: null,
+            blur : false,
+            profilereference : null
         };
         const heit = Math.max(Dimensions.get('window').height,Dimensions.get('window').width)/12;
         const Iconsize = heit/Math.min(Dimensions.get('window').height,Dimensions.get('window').width)*100
@@ -72,38 +76,66 @@ export default class AppHome extends React.Component {
        
     }
     TabLongPress=({e,navigation,route})=>{
-        alert(navigation.state.routeName);
+        alert('hi');
         
         //e.preventDefault();
         //navigation.navigate('Home');
     }
+    reference = ref =>{
+       this.setState({
+        profilereference : ref}
+        );
+        
+    }
 
     render() {
+        
         return (
+            
             <Tab.Navigator screenOptions={{
     
                 tabBarHideOnKeyboard: true,
                 tabBarShowLabel: false,
                 tabBarStyle: TabBarStylesBasic.basic,
-                }}>
+                }}
+                style={{ display:'none' }}
+                
+                
+                >
 
-            <Tab.Screen name="profiles" component={UserTabs} 
+            <Tab.Screen name="profiles" children={()=><UserData />} 
                                  options={{
                                      tabBarLabel: 'profile',
        
                                              tabBarIcon: ({ focused }) => (
-                         <Icon name="user-circle"   style={{    opacity: focused ? 1 : 0.2, color : focused ? '#900' : '#000' ,fontSize : focused ?  30  :  20  }} />
+                         <Icon name="cogs"   style={{    opacity: focused ? 1 : 0.2, color : focused ? '#900' : '#000' ,fontSize : focused ?  30  :  20  }} />
                          ),
                              }}/>
-                <Tab.Screen name="usertabs" component={UserTabs} 
+                 <Tab.Screen name="profile" component={UserData} 
+                                 options={{
+                                     tabBarLabel: 'profile',
+       
+                                             tabBarIcon: ({ focused }) => (
+                         <Icon name="plus-circle"   style={{    opacity: focused ? 1 : 0.2, color : focused ? '#900' : '#000' ,fontSize : focused ?  30  :  20  }} />
+                         ),
+                             }}/>
+                <Tab.Screen name="usertabs" children={()=><UserTabs blur={this.state.blur} refe={ this.reference } />} 
                         listeners={({ navigation, route }) => ({
-                            tabLongPress: (e) => { this.TabLongPress(e, navigation, route) },
+                            tabLongPress: (e) => { 
+                                ToastAndroid.show('Hide/show', ToastAndroid.SHORT);
+                                this.state.profilereference !== null ? 
+                                this.state.profilereference() :  
+                                this.setState(prev=>({
+                                    blur : !prev.blur
+                                }))
+                              },
                         })}
                         options={{ tabBarLabel: 'User',headerShown: false,
-                            tabBarIcon: ({ focused }) => (<Icon name="plus-circle"   style={{  opacity: focused ? 1 : 0.2,color : focused ? '#900' : '#000' , fontSize : focused ?  30  :  20   }} />
+                            tabBarIcon: ({ focused }) => (<Icon name="user-circle"   style={{  opacity: focused ? 1 : 0.2,color : focused ? '#900' : '#000' , fontSize : focused ?  30  :  20   }} />
                                 ),  
                             }}
                 />
+                 
                 
             </Tab.Navigator>
         );

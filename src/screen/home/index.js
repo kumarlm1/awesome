@@ -350,7 +350,7 @@ const Home = () => {
       //   />
         <NavigationContainer>
 
-      <AppHome/>
+      <AppHome />
       
     </NavigationContainer>
       // <NavigationContainer><FilePicker /></NavigationContainer>
